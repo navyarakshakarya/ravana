@@ -1,0 +1,15 @@
+type Query {
+  getWarehouseById(id: ID!): Warehouse
+  getAllWarehouses: [Warehouse!]
+}
+type Mutation {
+  addWarehouse(name: String!, location: String!): Warehouse
+  updateWarehouse(id: ID!, name: String, location: String): Warehouse
+  deleteWarehouse(id: ID!): Boolean
+}
+
+type Warehouse {
+  id: ID!
+  name: String!
+  location: String!
+}

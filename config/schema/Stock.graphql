@@ -1,0 +1,34 @@
+type Query {
+  getStockById(id: ID!): Stock
+  getStocksByProduct(productId: ID!): [Stock!]
+  getStocksByWarehouse(warehouseId: ID!): [Stock!]
+}
+
+type Mutation {
+  addStock(
+    productId: ID!
+    warehouseId: ID!
+    baseUnitId: ID!
+    quantity: Float!
+    receivedAt: Date!
+    receivedBy: String!
+  ): Stock
+  updateStock(stockId: ID!, quantity: Float): Stock
+  deleteStock(stockId: ID!): Boolean
+}
+
+type Stock {
+  id: ID!
+  productId: ID!
+  product: Product!
+  warehouse: Warehouse!
+  priceHistory: [Price!]! # Changed from 'price' for clarity
+  currentPrice: Price! # Added to get the latest active price
+  quantity: Float!
+  remainingQuantity: Float! # FIFO will adjust this when stock is used or sold
+  baseUnit: Unit!
+  availableUnits: [Unit!]! # Changed from 'units' for clarity
+  receivedAt: Date! # FIFO will use this for tracking active stock
+  receivedBy: String!
+  transactions: [Transaction!]!
+}

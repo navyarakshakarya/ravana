@@ -1,0 +1,34 @@
+type Query {
+  getPriceById(id: ID!): Price
+  getActivePriceByProduct(productId: ID!): Price
+  getPriceHistoryByProduct(productId: ID!): [Price!]
+}
+
+type Mutation {
+  addPrice(
+    productId: ID!
+    purchase: Float!
+    sell: Float!
+    unitId: ID!
+    activeFrom: Date!
+  ): Price
+  updatePrice(
+    priceId: ID!
+    purchase: Float
+    sell: Float
+    activeUntil: Date
+  ): Price
+  deactivatePrice(priceId: ID!, activeUntil: Date!): Price
+}
+
+type Price {
+  id: ID!
+	product: Product!
+  previousPriceId: ID
+  purchase: Float!
+  sell: Float!
+  unit: Unit!
+  active: Boolean!
+  activeFrom: Date!
+  activeUntil: Date
+}

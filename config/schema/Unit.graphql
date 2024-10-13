@@ -1,0 +1,17 @@
+type Query {
+  getUnitById(id: ID!): Unit
+  getUnitsByBaseUnit(baseUnitId: ID!): [Unit!]
+}
+
+type Mutation {
+  addUnit(baseUnitId: ID!, name: String!, conversion: Float!): Unit
+  updateUnit(id: ID!, name: String, conversion: Float): Unit
+  deleteUnit(id: ID!): Boolean
+}
+
+type Unit {
+  id: ID!
+  baseUnit: BaseUnit!
+  name: String!
+  conversion: Float! # Conversion factor relative to the base unit
+}

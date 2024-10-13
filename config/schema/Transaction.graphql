@@ -1,0 +1,47 @@
+type Query {
+  getTransactionById(id: ID!): Transaction
+  getTransactionsByStock(stockId: ID!): [Transaction!]
+  getTransactionsByDateRange(startDate: Date!, endDate: Date!): [Transaction!]
+}
+type Mutation {
+  addTransaction(
+    stockId: ID!
+    transactionType: TransactionType!
+    quantity: Float!
+    pricePerUnit: Float!
+    transactionUnitId: ID!
+    totalValue: Float!
+    transactionDate: Date!
+    transactionBy: String!
+    notes: String
+  ): Transaction
+  updateTransaction(
+    id: ID!
+    quantity: Float
+    pricePerUnit: Float
+    notes: String
+  ): Transaction
+  deleteTransaction(id: ID!): Boolean
+}
+
+enum TransactionType {
+  RECEIVE
+  BUY
+  SELL
+  RETURN
+  ADJUST
+}
+
+type Transaction {
+  id: ID!
+  stockId: ID!
+  stock: Stock!
+  transactionType: TransactionType!
+  quantity: Float!
+  pricePerUnit: Float!
+  transactionUnit: Unit!
+  totalValue: Float! # Computed: quantity * pricePerUnit
+  transactionDate: Date!
+  transactionBy: String!
+  notes: String
+}

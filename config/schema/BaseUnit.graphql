@@ -1,0 +1,16 @@
+type Query {
+  getBaseUnitById(id: ID!): BaseUnit
+  getAllBaseUnits: [BaseUnit!]
+}
+
+type Mutation {
+  addBaseUnit(name: String!): BaseUnit
+  updateBaseUnit(id: ID!, name: String!, active: Boolean): BaseUnit
+  deleteBaseUnit(id: ID!): Boolean
+}
+
+type BaseUnit {
+  id: ID!
+  name: String!
+  active: Boolean
+}

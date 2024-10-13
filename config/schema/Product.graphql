@@ -1,0 +1,38 @@
+type Query {
+  getProductById(id: ID!): Product
+  getAllProducts: [Product!]
+  getProductsByCategory(categoryId: ID!): [Product!]
+}
+
+type Mutation {
+  addProduct(name: String!, categoryId: ID!): Product
+  updateProduct(id: ID!, name: String, categoryId: ID!): Product
+  addStock(
+    productId: ID!
+    warehouseId: ID!
+    baseUnitId: ID!
+    quantity: Float!
+    price: Float!
+    receivedAt: Date!
+    receivedBy: String!
+  ): Stock
+  sellProduct(
+    productId: ID!
+    quantity: Float!
+    pricePerUnit: Float!
+    transactionDate: Date!
+    transactionBy: String!
+  ): [Transaction!]!
+  deleteProduct(id: ID!): Boolean
+}
+
+type Product {
+  id: ID!
+  name: String!
+  category: Category!
+  stockLevel: Float! # Changed from 'stock' for clarity, represents total stock across warehouses
+  currentPrice: Float! # Single price field for convenience, could be derived from active price
+  # stocks: [Stock!]! # Pluralized the field name
+  active: Boolean
+	deletedAt: Date # Soft delete
+}

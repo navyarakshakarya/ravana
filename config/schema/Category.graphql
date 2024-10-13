@@ -1,0 +1,15 @@
+type Query {
+  getCategoryById(id: ID!): Category
+  getAllCategories: [Category!]
+}
+type Mutation {
+  addCategory(name: String!): Category
+  updateCategory(id: ID!, name: String!, active: Boolean!): Category
+  deleteCategory(id: ID!): Boolean
+}
+
+type Category {
+  id: ID!
+  name: String!
+  active: Boolean
+}

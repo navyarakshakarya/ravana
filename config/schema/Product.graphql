@@ -1,0 +1,48 @@
+scalar Date
+
+type Product {
+  _id: ID!
+  productCode: String!
+  name: String!
+  description: String
+  stockLevel: Float!
+  currentPrice: Float!
+  category: Category!
+  stocks: [Stock!]!
+
+  # Audit
+  active: Boolean
+  createdAt: Date
+  updatedAt: Date
+  createdBy: String
+  updatedBy: String
+  deletedAt: Date
+}
+
+type Query {
+  GetProducts: [Product!]!
+  GetProduct(_id: ID!): Product!
+}
+
+type Mutation {
+  CreateProduct(data: CreateProductInput!): Product!
+  UpdateProduct(_id: ID!, data: UpdateProductInput!): Product!
+  DeleteProduct(_id: ID!): Product!
+  RestoreProduct(_id: ID!): Product!
+}
+
+input CreateProductInput {
+  name: String!
+  productCode: String
+  category: ID!
+  stockLevel: Float
+  currentPrice: Float
+}
+
+input UpdateProductInput {
+  name: String
+  productCode: String
+  category: ID
+  stockLevel: Float
+  currentPrice: Float
+}

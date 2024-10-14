@@ -4,6 +4,7 @@ import {
   initAppEnv,
   initLogging,
   initMongoConnection,
+  initApolloServer,
 } from "./appConfig";
 import { log, Mongo } from "./lib";
 
@@ -14,11 +15,12 @@ const main = async () => {
   try {
     const appEnv = initAppEnv(process.cwd());
     const loggingInstance = initLogging(appEnv);
-    mongoConnection = await initMongoConnection(appEnv, loggingInstance);
+    mongoConnection = await initMongoConnection(appEnv);
+    const apolloServer = await initApolloServer();
 
-    server = startApp(appEnv, loggingInstance, mongoConnection);
+    server = await startApp(appEnv, loggingInstance, mongoConnection, apolloServer);
   } catch (err: any) {
-    console.log("Failed to start app");
+    console.log("Failed to start server", err);
     process.exit(1)
   }
 };
@@ -46,3 +48,5 @@ process.on("SIGINT", async () => {
     process.exit(1);
   }, 10000);
 });
+
+export { log }

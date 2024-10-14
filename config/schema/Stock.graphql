@@ -1,0 +1,23 @@
+type Stock {
+  _id: ID!
+  product: Product!
+  stockCode: String!
+  quantity: Float!
+  stockLevel: Float!
+  price: Float!
+  sellPrice: Float
+  transactions: [Transaction!]
+
+  # Audit
+  active: Boolean
+  createdAt: Date
+  updatedAt: Date
+  createdBy: String
+  updatedBy: String
+  deletedAt: Date
+}
+
+type Query {
+  GetStocks: [Stock!]!
+  GetStock(_id: ID!): Stock!
+}

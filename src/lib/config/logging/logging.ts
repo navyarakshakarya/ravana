@@ -14,12 +14,13 @@ export class Logging {
     log = this.logger; // Set the global logger instance
   }
 
-  public static getInstance(loggingConfig: LoggingConfig): Logging {
-    if (!instance) {
+  public static getInstance(loggingConfig?: LoggingConfig): Logging {
+    if (!instance && loggingConfig) {
       instance = new Logging(loggingConfig);
     }
-    return instance;
+    return instance as Logging;
   }
+
 
   private validateConfig(loggingConfig: LoggingConfig): void {
     const { level, logFileName, logDir } = loggingConfig;

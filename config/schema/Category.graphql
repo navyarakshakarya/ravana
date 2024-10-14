@@ -1,0 +1,43 @@
+type Category {
+  _id: ID!
+  categoryCode: String!
+  name: String!
+  description: String
+  # audit
+  active: Boolean
+  createdAt: Date
+  updatedAt: Date
+  createdBy: String
+  updatedBy: String
+  deletedAt: Date
+}
+
+type Query {
+  GetCategories: [Category!]!
+  GetCategory(_id: ID!): Category!
+}
+
+type Mutation {
+  CreateCategory(data: CreateCategoryInput!): Category!
+  UpdateCategory(_id: ID!, data: UpdateCategoryInput!): Category!
+  DeleteCategory(_id: ID!): Category!
+  RestoreCategory(_id: ID!): Category!
+}
+
+input CreateCategoryInput {
+  name: String!
+  categoryCode: String!
+  description: String
+  active: Boolean
+}
+
+input UpdateCategoryInput {
+  name: String
+  categoryCode: String
+  description: String
+  active: Boolean
+}
+
+type Subscription {
+  _: Boolean
+}

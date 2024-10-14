@@ -1,0 +1,1 @@
+export { resolver as RootResolver } from "./rootResolver"

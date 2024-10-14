@@ -1,9 +1,14 @@
-import { Environment, Logging, LoggingConfig, Mongo, toUri } from "./lib";
+import { Environment, log, Logging, LoggingConfig, Mongo, toUri } from "./lib";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
 import router from "./route";
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express, Request, Response } from "express";
+import { expressMiddleware } from "@apollo/server/express4";
+import { RootResolver } from "./api/pkg/graphql";
+import { loadSchemaSync } from "@graphql-tools/load";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { ApolloServer } from "@apollo/server";
 
 // Initialize environment configuration
 export const initAppEnv = (baseDir?: string): Environment => {
@@ -30,7 +35,6 @@ export const initLogging = (env: Environment): Logging => {
 // Initialize MongoDB connection
 export const initMongoConnection = async (
   env: Environment,
-  log: Logging
 ): Promise<Mongo> => {
   const mongoConfig = {
     host: env.getStr("MONGO_HOST"),
@@ -40,13 +44,28 @@ export const initMongoConnection = async (
     dbAuthSource: env.getStr("MONGO_AUTH_SOURCE"),
     dbName: env.getStr("MONGO_DB_NAME"),
   };
-  const mongo = Mongo.getInstance(mongoConfig, log);
+  const mongo = Mongo.getInstance(mongoConfig);
   await mongo.connect();
   return mongo;
 };
 
+export const initApolloServer = async () => {
+  const typeDefs = loadSchemaSync(process.cwd() + "/config/schema/*.graphql", {
+    loaders: [new GraphQLFileLoader()],
+  });
+  log.info("GraphQL schema loaded", { schema: JSON.stringify(typeDefs) });
+
+  const apolloServer = new ApolloServer({
+    typeDefs,
+    resolvers: RootResolver,
+  });
+  log.info("Apollo server loaded");
+  await apolloServer.start();
+  return apolloServer
+}
+
 // Initialize Express application
-export const startApp = (env: Environment, log: Logging, mongo: Mongo) => {
+export const startApp = async(env: Environment, log: Logging, mongo: Mongo, apolloServer: ApolloServer) => {
   const app: Express = express();
   const port = env.getStr("APP_PORT") || 3000;
 
@@ -68,8 +87,10 @@ export const startApp = (env: Environment, log: Logging, mongo: Mongo) => {
       message: "Server is running",
     });
   });
+  app.all("/graphql", expressMiddleware(apolloServer))
 
-  app.use(env.getStr("BASE_URL"), router);
+  const path = env.getStr("APP_URL") + env.getStr("APP_VERSION");
+  app.use(path, router);
 
   const server = app.listen(port, () => {
     log.info(`Server is running on port ${port}`);

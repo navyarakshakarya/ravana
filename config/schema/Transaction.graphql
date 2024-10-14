@@ -1,0 +1,66 @@
+enum TransactionType {
+  IN
+  OUT
+  ADJUST
+}
+
+type Transaction {
+  _id: ID!
+  product: Product!
+  transactionCode: String!
+  quantity: Float!
+  remainingQuantity: Float!
+  price: Float!
+  sellPrice: Float!
+  description: String
+  receivedAt: Date
+  transactionType: TransactionType
+
+  # audit
+  active: Boolean
+  createdAt: Date
+  updatedAt: Date
+  createdBy: String
+  updatedBy: String
+  deletedAt: Date
+}
+
+type Query {
+  GetTransactions: [Transaction!]!
+  GetTransactionsByProduct(productId: ID!): [Transaction!]
+  GetTransaction(_id: ID!): Transaction!
+}
+
+type Mutation {
+  StockReceived(data: ReceiveStockInput!): Transaction!
+  StockConsumed(data: ConsumeStockInput!): [Transaction!]!
+  StockAdjusted(data: AdjustStockInput!): [Transaction!]!
+}
+
+input ReceiveStockInput {
+  product: ID!
+  quantity: Float!
+  price: Float!
+  sellPrice: Float
+  receivedAt: Date
+  description: String
+}
+
+input ConsumeStockInput {
+  product: ID!
+  quantity: Float!
+  price: Float!
+  sellPrice: Float
+  receivedAt: Date
+  description: String
+}
+
+input AdjustStockInput {
+  _id: ID!
+  product: ID!
+  transactionCode: String!
+  quantity: Float!
+  price: Float!
+  sellPrice: Float
+  description: String
+}
